@@ -1271,10 +1271,7 @@ public class StatementGenerator extends TreeVisitor {
     }
     if (node.getFinally() != null || resources.size() > 0) {
       buffer.append(" @finally {\n");
-      if (node.getFinally() != null) {
-        printStatements(node.getFinally().getStatements());
-      }
-      for (VariableDeclarationExpression var : resources) {
+      for (VariableDeclarationExpression var : Lists.reverse(resources)) {
         for (VariableDeclarationFragment frag : var.getFragments()) {
           buffer.append("@try {\n[");
           buffer.append(frag.getName().getFullyQualifiedName());
@@ -1285,6 +1282,9 @@ public class StatementGenerator extends TreeVisitor {
           buffer.append("__mainException = e;\n}\n");
           buffer.append("}\n");
         }
+      }
+      if (node.getFinally() != null) {
+        printStatements(node.getFinally().getStatements());
       }
       if (hasResources) {
         buffer.append("if (__mainException) {\n@throw __mainException;\n}\n");
