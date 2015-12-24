@@ -69,12 +69,16 @@ FRAMEWORK_HEADER = $(BUILD_DIR)/$(STATIC_FRAMEWORK_NAME).h
 # undef: less noisy header guards.
 # zero-length-array: avoids allocating extra word of memory in arrays, and needing to deallocate it.
 DISALLOWED_WARNINGS = \
+  -Wno-c++98-compat-pedantic \
+  -Wno-c99-extensions \
   -Wno-direct-ivar-access \
   -Wno-documentation \
+  -Wno-documentation-unknown-command \
   -Wno-dollar-in-identifier-extension \
   -Wno-objc-interface-ivars \
   -Wno-overriding-method-mismatch \
   -Wno-reserved-id-macro \
+  -Wno-super-class-method-mismatch \
   -Wno-undef \
   -Wno-zero-length-array
 
