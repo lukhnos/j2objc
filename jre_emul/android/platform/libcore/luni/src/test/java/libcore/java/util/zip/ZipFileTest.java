@@ -16,8 +16,7 @@
 
 package libcore.java.util.zip;
 
-/* J2ObjC removed.
-import android.system.OsConstants; */
+// import android.system.OsConstants;
 import libcore.io.Libcore;
 
 import java.io.BufferedOutputStream;
@@ -39,44 +38,68 @@ public final class ZipFileTest extends AbstractZipFileTest {
         return new ZipOutputStream(wrapped);
     }
 
+    static native long getNativeOffest(int fd) /*-[
+        return lseek(fd, 0, SEEK_CUR);
+    ]-*/;
+
+    void logOffset(int fd, String msg, long offset) {
+        System.err.printf("fd: %s, msg: %s, offset: %s\n", fd, msg, offset);
+    }
+
     /* J2ObjC removed: do not support android.system.OsConstants. */
     // http://b/30407219
-//    public void testZipFileOffsetNeverChangesAfterInit() throws Exception {
-//        final File f = createTemporaryZipFile();
-//        writeEntries(createZipOutputStream(new BufferedOutputStream(new FileOutputStream(f))),
-//                2 /* number of entries */, 1024 /* entry size */, true /* setEntrySize */);
-//
-//        ZipFile zipFile = new ZipFile(f);
-//        FileDescriptor fd = new FileDescriptor();
-//        fd.setInt$(zipFile.getFileDescriptor());
-//
-//        long initialOffset = android.system.Os.lseek(fd, 0, OsConstants.SEEK_CUR);
-//
-//        Enumeration<? extends ZipEntry> entries = zipFile.entries();
-//        assertOffset(initialOffset, fd);
-//
-//        // Get references to the two elements in the file.
-//        ZipEntry entry1 = entries.nextElement();
-//        ZipEntry entry2 = entries.nextElement();
-//        assertFalse(entries.hasMoreElements());
-//        assertOffset(initialOffset, fd);
-//
-//        InputStream is1 = zipFile.getInputStream(entry1);
-//        assertOffset(initialOffset, fd);
-//        is1.read(new byte[256]);
-//        assertOffset(initialOffset, fd);
-//        is1.close();
-//
-//        assertNotNull(zipFile.getEntry(entry2.getName()));
-//        assertOffset(initialOffset, fd);
-//
-//        zipFile.close();
-//    }
-//
-//    private static void assertOffset(long initialOffset, FileDescriptor fd) throws Exception {
-//        long currentOffset = android.system.Os.lseek(fd, 0, OsConstants.SEEK_CUR);
-//        assertEquals(initialOffset, currentOffset);
-//    } */
+   public void testZipFileOffsetNeverChangesAfterInit() throws Exception {
+       final File f = createTemporaryZipFile();
+       writeEntries(createZipOutputStream(new BufferedOutputStream(new FileOutputStream(f))),
+               2 /* number of entries */, 1024 /* entry size */, true /* setEntrySize */);
+
+       ZipFile zipFile = new ZipFile(f);
+       FileDescriptor fd = new FileDescriptor();
+       fd.setInt$(zipFile.getFileDescriptor());
+
+       int nativeFd = zipFile.getFileDescriptor();
+       long initialOffset = getNativeOffest(nativeFd); // android.system.Os.lseek(fd, 0, OsConstants.SEEK_CUR);
+
+       logOffset(nativeFd, "initialOffset: " + initialOffset, getNativeOffest(nativeFd));
+
+       Enumeration<? extends ZipEntry> entries = zipFile.entries();
+       logOffset(nativeFd, "afterEntries", getNativeOffest(nativeFd));
+
+       assertOffset(initialOffset, nativeFd);
+
+       // Get references to the two elements in the file.
+       ZipEntry entry1 = entries.nextElement();
+       logOffset(nativeFd, "entry1", getNativeOffest(nativeFd));
+
+       ZipEntry entry2 = entries.nextElement();
+       logOffset(nativeFd, "entry2", getNativeOffest(nativeFd));
+
+       assertFalse(entries.hasMoreElements());
+       assertOffset(initialOffset, nativeFd);
+
+       InputStream is1 = zipFile.getInputStream(entry1);
+       assertOffset(initialOffset, nativeFd);
+       is1.read(new byte[256]);
+
+       System.err.println("#### case1");
+       assertOffset(initialOffset, nativeFd);
+
+       System.err.println("#### case2");
+       is1.close();
+       assertOffset(initialOffset, nativeFd);
+
+       System.err.println("#### case3");
+       assertNotNull(zipFile.getEntry(entry2.getName()));
+       assertOffset(initialOffset, nativeFd);
+
+       zipFile.close();
+   }
+
+   private static void assertOffset(long initialOffset, int fd) throws Exception {
+       long currentOffset = getNativeOffest(fd); // android.system.Os.lseek(fd, 0, OsConstants.SEEK_CUR);
+       System.err.printf("assertOffset %s vs %s\n", initialOffset, currentOffset);
+       assertEquals(initialOffset, currentOffset);
+   }
 
     // b/31077136
     public void test_FileNotFound() throws Exception {

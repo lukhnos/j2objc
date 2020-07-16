@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1995, 2010, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1995, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -30,16 +30,13 @@
 #ifndef _ZIP_H_
 #define _ZIP_H_
 
-// J2ObjC: use ZIP_ prefix to avoid conflict with ZipConstants accessor
-// method names.
-
 /*
  * Header signatures
  */
-#define ZIP_LOCSIG 0x04034b50L          /* "PK\003\004" */
-#define ZIP_EXTSIG 0x08074b50L          /* "PK\007\008" */
-#define ZIP_CENSIG 0x02014b50L          /* "PK\001\002" */
-#define ZIP_ENDSIG 0x06054b50L          /* "PK\005\006" */
+#define LOCSIG 0x04034b50L          /* "PK\003\004" */
+#define EXTSIG 0x08074b50L          /* "PK\007\008" */
+#define CENSIG 0x02014b50L          /* "PK\001\002" */
+#define ENDSIG 0x06054b50L          /* "PK\005\006" */
 
 #define ZIP64_ENDSIG 0x06064b50L    /* "PK\006\006" */
 #define ZIP64_LOCSIG 0x07064b50L    /* "PK\006\007" */
@@ -48,10 +45,10 @@
  * Header sizes including signatures
  */
 
-#define ZIP_LOCHDR 30
-#define ZIP_EXTHDR 16
-#define ZIP_CENHDR 46
-#define ZIP_ENDHDR 22
+#define LOCHDR 30
+#define EXTHDR 16
+#define CENHDR 46
+#define ENDHDR 22
 
 #define ZIP64_ENDHDR 56       // ZIP64 end header size
 #define ZIP64_LOCHDR 20       // ZIP64 end loc header size
@@ -74,50 +71,50 @@
 /*
  * Macros for getting local file (LOC) header fields
  */
-#define ZIP_LOCVER(b) SH(b, 4)          /* version needed to extract */
-#define ZIP_LOCFLG(b) SH(b, 6)          /* general purpose bit flags */
-#define ZIP_LOCHOW(b) SH(b, 8)          /* compression method */
-#define ZIP_LOCTIM(b) LG(b, 10)         /* modification time */
-#define ZIP_LOCCRC(b) LG(b, 14)         /* crc of uncompressed data */
-#define ZIP_LOCSIZ(b) LG(b, 18)         /* compressed data size */
-#define ZIP_LOCLEN(b) LG(b, 22)         /* uncompressed data size */
-#define ZIP_LOCNAM(b) SH(b, 26)         /* filename length */
-#define ZIP_LOCEXT(b) SH(b, 28)         /* extra field length */
+#define LOCVER(b) SH(b, 4)          /* version needed to extract */
+#define LOCFLG(b) SH(b, 6)          /* general purpose bit flags */
+#define LOCHOW(b) SH(b, 8)          /* compression method */
+#define LOCTIM(b) LG(b, 10)         /* modification time */
+#define LOCCRC(b) LG(b, 14)         /* crc of uncompressed data */
+#define LOCSIZ(b) LG(b, 18)         /* compressed data size */
+#define LOCLEN(b) LG(b, 22)         /* uncompressed data size */
+#define LOCNAM(b) SH(b, 26)         /* filename length */
+#define LOCEXT(b) SH(b, 28)         /* extra field length */
 
 /*
  * Macros for getting extra local (EXT) header fields
  */
-#define ZIP_EXTCRC(b) LG(b, 4)          /* crc of uncompressed data */
-#define ZIP_EXTSIZ(b) LG(b, 8)          /* compressed size */
-#define ZIP_EXTLEN(b) LG(b, 12)         /* uncompressed size */
+#define EXTCRC(b) LG(b, 4)          /* crc of uncompressed data */
+#define EXTSIZ(b) LG(b, 8)          /* compressed size */
+#define EXTLEN(b) LG(b, 12)         /* uncompressed size */
 
 /*
  * Macros for getting central directory header (CEN) fields
  */
-#define ZIP_CENVEM(b) SH(b, 4)          /* version made by */
-#define ZIP_CENVER(b) SH(b, 6)          /* version needed to extract */
-#define ZIP_CENFLG(b) SH(b, 8)          /* general purpose bit flags */
-#define ZIP_CENHOW(b) SH(b, 10)         /* compression method */
-#define ZIP_CENTIM(b) LG(b, 12)         /* modification time */
-#define ZIP_CENCRC(b) LG(b, 16)         /* crc of uncompressed data */
-#define ZIP_CENSIZ(b) LG(b, 20)         /* compressed size */
-#define ZIP_CENLEN(b) LG(b, 24)         /* uncompressed size */
-#define ZIP_CENNAM(b) SH(b, 28)         /* length of filename */
-#define ZIP_CENEXT(b) SH(b, 30)         /* length of extra field */
-#define ZIP_CENCOM(b) SH(b, 32)         /* file comment length */
-#define ZIP_CENDSK(b) SH(b, 34)         /* disk number start */
-#define ZIP_CENATT(b) SH(b, 36)         /* internal file attributes */
-#define ZIP_CENATX(b) LG(b, 38)         /* external file attributes */
-#define ZIP_CENOFF(b) LG(b, 42)         /* offset of local header */
+#define CENVEM(b) SH(b, 4)          /* version made by */
+#define CENVER(b) SH(b, 6)          /* version needed to extract */
+#define CENFLG(b) SH(b, 8)          /* general purpose bit flags */
+#define CENHOW(b) SH(b, 10)         /* compression method */
+#define CENTIM(b) LG(b, 12)         /* modification time */
+#define CENCRC(b) LG(b, 16)         /* crc of uncompressed data */
+#define CENSIZ(b) LG(b, 20)         /* compressed size */
+#define CENLEN(b) LG(b, 24)         /* uncompressed size */
+#define CENNAM(b) SH(b, 28)         /* length of filename */
+#define CENEXT(b) SH(b, 30)         /* length of extra field */
+#define CENCOM(b) SH(b, 32)         /* file comment length */
+#define CENDSK(b) SH(b, 34)         /* disk number start */
+#define CENATT(b) SH(b, 36)         /* internal file attributes */
+#define CENATX(b) LG(b, 38)         /* external file attributes */
+#define CENOFF(b) LG(b, 42)         /* offset of local header */
 
 /*
  * Macros for getting end of central directory header (END) fields
  */
-#define ZIP_ENDSUB(b) SH(b, 8)          /* number of entries on this disk */
-#define ZIP_ENDTOT(b) SH(b, 10)         /* total number of entries */
-#define ZIP_ENDSIZ(b) LG(b, 12)         /* central directory size */
-#define ZIP_ENDOFF(b) LG(b, 16)         /* central directory offset */
-#define ZIP_ENDCOM(b) SH(b, 20)         /* size of zip file comment */
+#define ENDSUB(b) SH(b, 8)          /* number of entries on this disk */
+#define ENDTOT(b) SH(b, 10)         /* total number of entries */
+#define ENDSIZ(b) LG(b, 12)         /* central directory size */
+#define ENDOFF(b) LG(b, 16)         /* central directory offset */
+#define ENDCOM(b) SH(b, 20)         /* size of zip file comment */
 
 /*
  * Macros for getting Zip64 end of central directory header fields
@@ -157,6 +154,7 @@
  * - If pos <= 0 then it is the position of entry LOC header.
  *   If pos > 0 then it is the position of entry data.
  *   pos should not be accessed directly, but only by ZIP_GetEntryDataOffset.
+ * - entry name may include embedded null character, use nlen for length
  */
 
 typedef struct jzentry {  /* Zip file entry */
@@ -169,6 +167,7 @@ typedef struct jzentry {  /* Zip file entry */
     jbyte *extra;         /* optional extra data */
     jlong pos;            /* position of LOC header or entry data */
     jint flag;            /* general purpose flag */
+    jint nlen;            /* length of the entry name */
 } jzentry;
 
 /*
@@ -277,5 +276,6 @@ void ZIP_Unlock(jzfile *zip);
 jint ZIP_Read(jzfile *zip, jzentry *entry, jlong pos, void *buf, jint len);
 void ZIP_FreeEntry(jzfile *zip, jzentry *ze);
 jlong ZIP_GetEntryDataOffset(jzfile *zip, jzentry *entry);
+jzentry * ZIP_GetEntry2(jzfile *zip, char *name, jint ulen, jboolean addSlash);
 
 #endif /* !_ZIP_H_ */
